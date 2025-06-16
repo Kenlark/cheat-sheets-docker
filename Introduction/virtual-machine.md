@@ -6,10 +6,11 @@ En d'autres termes, une machine virtuelle est un environnement isolé qui foncti
 
 ## Illustration :
 
-[ Matériel physique (CPU, RAM, Disque...) ]
-                ↑
-[ Hyperviseur (ex: VirtualBox, VMware, KVM) ]
-                ↑
-[ VM 1 ]   [ VM 2 ]   [ VM 3 ]
-[ OS ]     [ OS ]     [ OS ]
-[ Apps ]   [ Apps ]   [ Apps ]
+**[ Matériel physique (CPU, RAM, Disque...) ]**  
+&nbsp; &nbsp; &nbsp; ↑  
+**[ Hyperviseur (ex: VirtualBox, VMware, KVM) ]**  
+&nbsp; &nbsp; &nbsp; ↑  
+**[ VM 1 ]** &nbsp; **[ VM 2 ]** &nbsp; **[ VM 3 ]**  
+**[ OS ]** &nbsp; &nbsp; &nbsp; **[ OS ]** &nbsp; &nbsp; &nbsp; **[ OS ]**  
+**[ Apps ]** &nbsp; &nbsp; **[ Apps ]** &nbsp; &nbsp; **[ Apps ]**
+
