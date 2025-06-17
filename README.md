@@ -29,3 +29,4 @@ Ce dépôt regroupe des fiches pratiques (cheat sheets) pour comprendre, install
 - **1.Introduction/** : Présentation des concepts de base (bare metal, VM, conteneur, comparaisons).
 - **2.Docker/** : Explications sur Docker, ses concepts clés, la différence entre images et conteneurs, les registres et Docker Hub.
 - **3. Installation/** : Guide pas à pas pour installer Docker sur Ubuntu/Debian.
+- **4. Commandes Diverses/** : Guide de certaines commandes de base de Docker.
