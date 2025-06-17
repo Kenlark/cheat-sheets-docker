@@ -24,6 +24,10 @@ Ce dépôt regroupe des fiches pratiques (cheat sheets) pour comprendre, install
 
 - [Installation de Docker (Ubuntu/Debian)](3.%20Installation/installation-docker.md)
 
+### 4. Commandes Diverses
+
+- [Commandes Diverses](4.%20Commandes%20diverses/)
+
 ## Description des dossiers
 
 - **1.Introduction/** : Présentation des concepts de base (bare metal, VM, conteneur, comparaisons).
