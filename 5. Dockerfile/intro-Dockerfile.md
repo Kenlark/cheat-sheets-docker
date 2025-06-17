@@ -1,0 +1,121 @@
+# Qu'es-ce qu'un Dockerfile ?
+
+Un Dockerfile est un fichier texte qui contient les instructions pour construire une image Docker. En d'autres termes, c’est une recette qui dit à Docker comment créer un environnement complet (comme un mini-serveur avec votre appli, Node, Nginx, etc....).
+
+## A quoi ça sert ?
+
+Il sert à :
+
+- Automatiser la création d'une image
+- Installer des dépendances
+- Copier des fichiers dans l'image
+- Définir une commande de démarrage
+- Spécifier un environnement d'exécution (ex : Node.js, Python, etc...)
+
+## Format dans un Dockerfile
+
+- **Nom du fichier** : Le Dockerfile est un fichier **sans extension**, toujours nommé `Dockerfile` (avec un **D majuscule**)
+- **Instructions** : Chaque ligne commence par une **instruction Docker** (`FROM`, `COPY`, `CMD`, etc.)
+- **Commentaires** : Les commentaires dans un `Dockerfile` commencent toujours par `#`. Ils sont utiles à la documentation
+
+## Exemple simple :
+
+```dockerfile
+# Utilise l'image officielle Nginx comme image de base
+FROM nginx:alpine
+
+# Définit le répertoire de travail dans le conteneur
+WORKDIR /usr/share/nginx/html
+
+# Copie les fichiers de l'application web statique depuis le répertoire actuel vers le répertoire de travail dans le conteneur
+COPY . .
+
+# Expose le port 80
+EXPOSE 80
+
+# Utilise la commande par défaut de l'image Nginx pour démarrer le serveur
+CMD ["nginx", "-g", "daemon off;"]
+
+```
+
+Explications :
+
+- **`FROM nginx:alpine`** : Cette ligne indique que l'image sera construite à partir de l'image officielle Nginx utilisant la version "alpine", qui est une version légère d'Alpine Linux. Cela sert de point de départ et fournit Nginx prêt à l'emploi.
+
+- **`WORKDIR /usr/share/nginx/html`** : Cette commande définit le répertoire de travail dans le conteneur. C'est là que les fichiers de notre site seront servis par Nginx.
+
+- **`COPY . .`** : L'instruction `COPY` est utilisée pour copier des fichiers et des dossiers de votre machine locale dans l'image Docker que vous êtes en train de construire. Cette commande prend deux arguments principaux : le premier spécifie le chemin source (où les fichiers se trouvent sur votre machine) et le second spécifie le chemin de destination (où les fichiers seront placés dans l'image Docker).
+
+  Dans cet exemple `COPY . .`, les deux points sont utilisés pour indiquer :
+
+  - Le premier `.` (point) représente le répertoire dans lequel se trouve le Dockerfile sur votre machine locale. Cela signifie "prendre tous les fichiers et dossiers présents dans ce répertoire".
+  - Le deuxième `.` (point) se réfère au répertoire de travail actuel à l'intérieur de l'image Docker, qui a été défini préalablement par l'instruction `WORKDIR`. Si, par exemple, `WORKDIR /usr/share/nginx/html` a été spécifié, alors le deuxième `.` représente ce chemin dans l'image Docker.
+
+  Ainsi, `COPY . .` signifie "copier tous les fichiers et dossiers du répertoire courant (où se trouve le Dockerfile sur la machine locale) dans le répertoire de travail actuel à l'intérieur de l'image Docker".
+
+  C'est une manière concise de transférer le contenu de votre application (comme les fichiers HTML, CSS, JavaScript pour un site web) de votre environnement de développement vers l'environnement de l'image Docker, permettant à cette dernière d'accéder aux fichiers nécessaires pour exécuter l'application.
+
+- **`EXPOSE 80`** : Indique que le conteneur écoute sur le port 80. C'est le port par défaut pour le trafic web HTTP.
+
+- **`CMD ["nginx", "-g", "daemon off;"]`** : L'instruction `CMD ["nginx", "-g", "daemon off;"]` dans un Dockerfile est utilisée pour définir la commande par défaut qui sera exécutée au démarrage du conteneur. Voici une explication plus détaillée pour rendre cela plus clair :
+
+  - `CMD` est une instruction Dockerfile qui spécifie la commande à exécuter lorsque le conteneur démarre. Si le Dockerfile ne spécifie pas d'entrée (`ENTRYPOINT`), `CMD` définit à la fois la commande et les paramètres qui seront exécutés.
+
+  - Les crochets `["nginx", "-g", "daemon off;"]` dénotent la forme dite "exec" de l'instruction `CMD`, qui permet à Docker d'exécuter la commande directement, sans passer par un shell intermédiaire. Cela signifie que la commande est exécutée plus proprement et de manière plus sécurisée.
+
+  - `nginx` est le nom du programme à exécuter. Dans ce contexte, il démarre le serveur web Nginx.
+
+  - `-g "daemon off;"` est un paramètre passé à Nginx lors de son exécution. Par défaut, Nginx fonctionne comme un daemon, c'est-à-dire qu'il s'exécute en arrière-plan. Toutefois, dans un conteneur Docker, il est préférable que Nginx (ou tout processus principal) s'exécute au premier plan pour que Docker puisse correctement gérer et surveiller le processus. Le paramètre `-g "daemon off;"` indique à Nginx de ne pas démarrer comme un daemon, mais plutôt de s'exécuter au premier plan, ce qui est la pratique recommandée pour les conteneurs Docker.
+
+  En résumé, l'instruction `CMD ["nginx", "-g", "daemon off;"]` assure que le conteneur démarre le serveur web Nginx en mode non-daemon, permettant ainsi au conteneur de rester actif et au serveur web de répondre aux requêtes.
+
+## Cycle typique de mise en place d'une image Docker
+
+1. **Créer un fichier `Dockerfile`**  
+   Place-le à la racine de ton projet. Il contient toutes les instructions nécessaires à la construction de l’image Docker.
+
+2. **Construire l’image Docker**  
+   Depuis le dossier contenant le Dockerfile, exécute :
+
+```zsh
+docker build -t mon-app .
+```
+
+```zsh
+docker build -t mon-app .
+```
+
+- `-t mon-app` : nom de l'image
+- `.` : le point indique le contexte de construction (le dossier actuel, avec le Dockerfile et tous les fichiers nécessaires à copier dans l’image).\_
+
+3. (Optionnel) Vérifier que l'image à été créée
+
+```zsh
+docker images
+```
+
+4. Lancer un conteneur à partir de l'image
+
+```zsh
+docker run -d -p 8080:80 mon-app
+```
+
+- `-d` : exécute en arrière-plan
+- `-p 8080:80` : mappe le port 80 du conteneur (défini par `EXPOSE 80`) sur le port 8080 de votre machine locale
+- `mon-app` : nom de l'image construite
+
+## Résumé
+
+- **Dockerfile** : Un fichier texte contenant des instructions pour construire une image Docker, similaire à une recette de cuisine pour votre application.
+- **Instructions courantes** :
+  - `FROM` : Définit l'image de base.
+  - `RUN` : Exécute des commandes dans le conteneur.
+  - `COPY`/`ADD` : Copie des fichiers et répertoires.
+  - `CMD`/`ENTRYPOINT` : Définit la commande par défaut du conteneur.
+  - `EXPOSE` : Indique les ports sur lesquels le conteneur écoute.
+- **Structure du Dockerfile** : Commence par l'image de base, suivi par les configurations nécessaires et les commandes pour lancer l'application.
+- **Exemple avec Nginx** :
+  - Utilise Nginx comme serveur web.
+  - Copie le contenu web statique dans le conteneur.
+  - Expose le port 80.
+  - Lance Nginx en mode non-daemon.
